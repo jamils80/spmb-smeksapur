@@ -151,9 +151,10 @@
     }
 
     function panggilSuara(item, index, isRecall) {
-      if(!audioBase64) return;
+      // Gunakan URL Nada Bel Khusus dari Operator atau Fallback Standar
+      let nadaUrl = item.nada || "https://lh3.googleusercontent.com/d/1qWpZQggfX9yuQca-GRM_0RHKXLyvdv12";
       
-      let belAudio = new Audio("data:audio/wav;base64," + audioBase64);
+      let belAudio = new Audio(nadaUrl);
       belAudio.play().then(() => {
         belAudio.onended = () => {
           setTimeout(() => {
