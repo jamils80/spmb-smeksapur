@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display Monitor Antrian SPMB</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f0f7ff; color: #333; padding: 10px 15px; font-family: 'Poppins', sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+    .header-section { background: #fff9c4; border-radius: 15px; padding: 10px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #f1c40f; animation: headerPulse 3s ease-in-out infinite alternate; }
+    @keyframes headerPulse { 0% { box-shadow: 0 4px 10px rgba(241, 196, 15, 0.2); } 100% { box-shadow: 0 4px 20px rgba(241, 196, 15, 0.5); } }
+    .animate-judul { background: linear-gradient(to right, #1e3c72, #2a5298, #ff4757, #1e3c72); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textGradient 6s linear infinite; }
+    .animate-subjudul { color: #64748b; animation: subJudulFade 2s ease-in-out infinite alternate; letter-spacing: 2px; }
+    @keyframes textGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    @keyframes subJudulFade { 0% { opacity: 0.7; transform: scale(0.99); } 100% { opacity: 1; transform: scale(1.01); } }
+    .logo-display { height: 60px; width: auto; object-fit: contain; }
+    .grid-container { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px; flex-grow: 1; padding-bottom: 10px; }
+    .box { background: white; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; transition: all 0.4s ease; border: 2px solid #e2e8f0; }
+    .box-header { padding: 10px; font-weight: 700; font-size: 0.9rem; text-align: center; color: white; }
+    .box-content-wrapper { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; padding: 10px 0; transition: background-color 0.4s ease; }
+    .no-antrian { font-size: 4.8rem; font-weight: 900; text-align: center; line-height: 1.1; margin: 0; }
+    .nama-pendaftar { font-weight: 700; font-size: 1.1rem; text-align: center; padding: 5px 10px 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .box-footer { background: #f8fafc; padding: 8px; font-size: 0.85rem; text-align: center; font-weight: 600; color: #64748b; border-top: 1px solid #f1f5f9; }
+
+    /* WIDE COLOR SCHEMES OPERATOR A-J */
+    .theme-a .box-header { background: #ff4757; } .theme-a { border-color: #ff4757; } .theme-a .box-content-wrapper { background-color: #ffeef0; } .theme-a .no-antrian, .theme-a .nama-pendaftar { color: #b31020; }
+    .theme-b .box-header { background: #2ed573; } .theme-b { border-color: #2ed573; } .theme-b .box-content-wrapper { background-color: #e8fced; } .theme-b .no-antrian, .theme-b .nama-pendaftar { color: #106b31; }
+    .theme-c .box-header { background: #1e90ff; } .theme-c { border-color: #1e90ff; } .theme-c .box-content-wrapper { background-color: #e8f4ff; } .theme-c .no-antrian, .theme-c .nama-pendaftar { color: #0050b3; }
+    .theme-d .box-header { background: #ffa502; } .theme-d { border-color: #ffa502; } .theme-d .box-content-wrapper { background-color: #fff6e5; } .theme-d .no-antrian, .theme-d .nama-pendaftar { color: #b36b00; }
+    .theme-e .box-header { background: #9b59b6; } .theme-e { border-color: #9b59b6; } .theme-e .box-content-wrapper { background-color: #f6ebf9; } .theme-e .no-antrian, .theme-e .nama-pendaftar { color: #5b2c73; }
+    .theme-f .box-header { background: #34495e; } .theme-f { border-color: #34495e; } .theme-f .box-content-wrapper { background-color: #ebf0f5; } .theme-f .no-antrian, .theme-f .nama-pendaftar { color: #1c2833; }
+    .theme-g .box-header { background: #16a085; } .theme-g { border-color: #16a085; } .theme-g .box-content-wrapper { background-color: #e4f6f3; } .theme-g .no-antrian, .theme-g .nama-pendaftar { color: #0b5345; }
+    .theme-h .box-header { background: #d35400; } .theme-h { border-color: #d35400; } .theme-h .box-content-wrapper { background-color: #fbeee6; } .theme-h .no-antrian, .theme-h .nama-pendaftar { color: #7e3300; }
+    .theme-i .box-header { background: #00bcd4; } .theme-i { border-color: #00bcd4; } .theme-i .box-content-wrapper { background-color: #e0f7fa; } .theme-i .no-antrian, .theme-i .nama-pendaftar { color: #006064; }
+    .theme-j .box-header { background: #e91e63; } .theme-j { border-color: #e91e63; } .theme-j .box-content-wrapper { background-color: #fce4ec; } .theme-j .no-antrian, .theme-j .nama-pendaftar { color: #880e4f; }
+
+    .box.active { animation: blinker 0.5s linear infinite alternate; transform: scale(1.04); box-shadow: 0 15px 30px rgba(0,0,0,0.25); z-index: 10; }
+    @keyframes blinker { 0% { opacity: 1; } 100% { opacity: 0.75; background-color: #fff3cd; } }
+    .footer-info { background: #1e3c72; color: white; padding: 12px 20px; border-radius: 15px; overflow: hidden; white-space: nowrap; position: relative; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); margin-top: 5px; }
+    .running-text { display: inline-block; padding-left: 100%; animation: marquee 30s linear infinite; font-weight: 600; font-size: 1.05rem; letter-spacing: 0.5px; }
+    @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+    .btn-start { background: #2ecc71; color: white; padding: 15px 40px; font-weight: bold; border-radius: 50px; font-size: 1.5rem; border: none; box-shadow: 0 10px 20px rgba(46, 204, 113, 0.4); }
+  </style>
+</head>
+<body>
+
+  <div id="startScreen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;">
+    <button class="btn-start" onclick="startMonitor()">AKTIFKAN SUARA MONITOR DISPLAY</button>
+  </div>
+
+  <div class="header-section">
+    <img src="https://lh3.googleusercontent.com/d/1MZz8aioQlkFozWDJ1Y7Z1tRj_nZCSWO0" class="logo-display" alt="Logo Jatim">
+    <div class="text-center">
+      <h3 class="fw-bold m-0 animate-judul" style="letter-spacing: 1px;">MONITOR ANTRIAN SPMB 2026</h3>
+      <h5 class="fw-bold m-0 animate-subjudul">SMKN 1 PURWOASRI KEDIRI</h5>
+    </div>
+    <img src="https://lh3.googleusercontent.com/d/1gj5Xy_Gk9UHulau-_vf3IZuYlQtQN6Jz" class="logo-display" alt="Logo SMKN">
+  </div>
+
+  <div class="grid-container" id="container"></div>
+
+  <div class="footer-info">
+    <div class="running-text">
+      <span>Informasi Rombel SMKN 1 Purwoasri Tahun Ajaran 2026/2027 : 1. Teknik Pemesinan = 2 Rombel | 2. Teknik Kendaraan Ringan = 1 Rombel | 3. Teknik Sepeda Motor = 1 Rombel | 4. Teknik Instalasi Tenaga Listrik = 1 Rombel | 5. Teknik Komputer dan Jaringan = 1 Rombel | 6. Akuntansi = 3 Rombel | 7. Teknik Pemanasan Tata Udara & Pendingin = 1 Rombel</span>
+    </div>
+  </div>
+
+  <script>
+    const RAW_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyhZQOFsuclwetmdyAMkmG-X3DNGId7i-Of_bWGk8DWL4Bb_zS-ngFTzveVs3h9VvH5/exec";
+    const WEB_APP_URL = RAW_WEB_APP_URL.replace(/\/u\/\d+\//, '/');
+
+    let audioBase64 = "";
+    let isStarted = false;
+    let lastData = {};
+    let activeCallBoxes = {}; 
+
+    const mapOperatorLetter = { 1:"A", 2:"B", 3:"C", 4:"D", 5:"E", 6:"F", 7:"G", 8:"H", 9:"I", 10:"J" };
+    const temaKotak = { 1:"theme-a", 2:"theme-b", 3:"theme-c", 4:"theme-d", 5:"theme-e", 6:"theme-f", 7:"theme-g", 8:"theme-h", 9:"theme-i", 10:"theme-j" };
+
+    function startMonitor() {
+      isStarted = true;
+      document.getElementById('startScreen').style.display = 'none';
+
+      fetch(`${WEB_APP_URL}?action=getAudioBase64`)
+        .then(res => res.json())
+        .then(base64 => {
+          audioBase64 = base64;
+          return fetch(`${WEB_APP_URL}?action=getDisplayData`);
+        })
+        .then(res => res.json())
+        .then(data => {
+          lastData = data;
+          renderUI(data);
+          setInterval(update, 3000); 
+        });
+    }
+
+    function renderUI(data) {
+      let html = "";
+      for(let i = 1; i <= 10; i++){
+        let item = data[i] || { nomor: "-", nama: "-", sekolah: "-" };
+        let warnaClass = temaKotak[i] || "theme-a";
+        let hurufOp = mapOperatorLetter[i] || "A";
+        let isCurrentlyActive = activeCallBoxes[i] ? 'active' : '';
+        
+        html += `
+          <div class="box item-${i} ${warnaClass} ${isCurrentlyActive}" id="box-op-${i}">
+            <div class="box-header">OPERATOR ${hurufOp} - NOMOR ANTRIAN</div>
+            <div class="box-content-wrapper">
+              <div class="no-antrian">${item.nomor}</div>
+              <div class="nama-pendaftar">${item.nomor !== "-" ? item.nama : "&nbsp;"}</div>
+            </div>
+            <div class="box-footer">${item.nomor !== "-" ? item.sekolah : "---"}</div>
+          </div>`;
+      }
+      document.getElementById('container').innerHTML = html;
+    }
+
+    function update() {
+      if(!isStarted) return;
+      fetch(`${WEB_APP_URL}?action=getDisplayData`)
+        .then(res => res.json())
+        .then(data => {
+          for(let i = 1; i <= 10; i++){
+            let item = data[i];
+            let isNew = false;
+            let isRecallAction = false; 
+            
+            if (lastData[i]) {
+              let nomorBerubah = (lastData[i].nomor !== item.nomor && item.nomor !== "-");
+              let recallBertambah = (lastData[i].nomor === item.nomor && item.nomor !== "-" && parseInt(item.recall) > parseInt(lastData[i].recall));
+              
+              if (nomorBerubah) {
+                isNew = true;
+                activeCallBoxes[i] = true;
+              } else if (recallBertambah) {
+                isNew = true;
+                isRecallAction = true; 
+                activeCallBoxes[i] = true;
+              }
+            }
+            
+            if(isNew) {
+              panggilSuara(item, i, isRecallAction);
+            }
+          }
+          renderUI(data);
+          lastData = data;
+        });
+    }
+
+    function panggilSuara(item, index, isRecall) {
+      if(!audioBase64) return;
+      
+      let belAudio = new Audio("data:audio/wav;base64," + audioBase64);
+      belAudio.play().then(() => {
+        belAudio.onended = () => {
+          setTimeout(() => {
+            let hurufOperator = mapOperatorLetter[index] || "A";
+            let teksPanggilan = "";
+            
+            if (isRecall) {
+              teksPanggilan += "Kami ulangi. ";
+            }
+            
+            teksPanggilan += "Nomor antrian " + item.nomor + ", " +
+                             "Nama " + item.nama + ", " +
+                             "Dari sekolah " + item.sekolah + ", " +
+                             "Silakan menuju ke Operator " + hurufOperator;
+            
+            let tts = new SpeechSynthesisUtterance(teksPanggilan);
+            tts.lang = 'id-ID';
+            tts.rate = 0.85; 
+            tts.pitch = 1.0;
+            
+            tts.onend = function(event) {
+              activeCallBoxes[index] = false;
+              let targetBox = document.getElementById("box-op-" + index);
+              if(targetBox) {
+                targetBox.classList.remove('active');
+              }
+            };
+            
+            window.speechSynthesis.speak(tts);
+          }, 400);
+        };
+      }).catch(e => console.log("Gagal memutar audio bel:", e));
+    }
+  </script>
+</body>
+</html>
